@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+  {% if g.user %} <!--用g.user进行权限控制-->
+    <a class="action" href="{{ url_for('blog.create') }}">新建</a>
+  {% endif %}
+
+  <form class="navbar-form navbar-left" role="search">
+	<div class="form-group">
+		<input type="text" class="form-control" />
+	</div> <button type="submit" class="btn btn-default">搜索</button>
+</form>
+{% endblock %}
+
+
+{% block content %}
+<body>
+	<div class="row clearfix">
+	{% for post in posts %}
+		<div class="col-md-12 column">
+			<h2>
+				{{ post['title'] }}
+			</h2>
+			<div class="about">作者： {{ post['username'] }} 时间： {{ post['created'].strftime('%Y-%m-%d') }}</div>
+			{% if g.user['id'] == post['author_id'] %}<!--用g.user进行权限控制-->
+          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">编辑</a>
+        	{% endif %}
+			<p>
+				{{ post['body'] }}
+			</p>
+			<p>
+				 <a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+		{% if not loop.last %}<!--loop.last 是一个 Jinja for 循环 内部可用的特殊变量，它用于在每个 博客帖子后面显示一条线来分隔帖子，最后一个帖子除外。-->
+		{% endif %}
+	  {% endfor %}
+	</div>
+</body>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'movie/moviebase.html' %}
+
+
+{% block content%}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-4 column">
+			<img  src="{{ posts['searchres'][0]['img'] }}" height="400" width="300" />
+		</div>
+		<div class="col-md-8 column">
+			<div class="list-group">
+				{% for val in posts['displaynum'] %}
+
+				 <li  class="list-group-item"><span>{{ posts['displayname'][val]  }}:</span>{{ posts['searchres'][0][val] }}</li>
+
+				 {% endfor %}
+				
+				
+				 
+			</div>
+		</div>
+		<div class="col-md-12 column">
+			<HR>
+		</div>
+	</div>
+
+	<div class="row clearfix ">
+		<div class="col-md-12 column">
+			<div class="jumbotron">
+				<h3>
+					简介：
+				</h3>
+				<p >
+					{{posts['searchres'][0]['introduction']}}
+				</p>
+			</div>
+		</div>
+		<div class="col-md-12 column">
+			<HR>
+		</div>
+	</div>
+
+
+	<div class="row clearfix">
+
+		<div class="col-md-12 column">
+			<h3><p class="bg-info">播放列表：</p></h3>
+			<p>如果遇到网络错误，请多刷新几次，或错开网络高峰期在观看</p>
+		</div>
+
+		<div class="row">
+
+			{% for key,val in posts['m3u8'].items() %}
+			<div class="col-sm-6 col-md-4">
+				<butten class="btn btn-default" role="button" onclick="getlink('{{val}}')">{{key}}</butten>
+			</div>
+			{%endfor%}
+		</div>
+	</div>
+
+
+    <script src="//imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer-2.3.2.js" charset="utf-8"></script>
+<!--播放器-->
+
+<script type="text/javascript" src="{{url_for('static',_external=True,filename='ckplayer/ckplayer.js')}}"></script>
+<div class="row">
+    <div class="col-sm-1 col-md-2"></div>
+    <div class="col-sm-10 col-md-8" id="player" style="width:600px;height:400px;"></div>
+    <div class="col-sm-1 col-md-2"></div>
+  </div>
+<script>
+function getlink(strlink)
+    {
+		var divplayer=document.getElementById("player")
+		divplayer.innerHTML=''
+    var player =  new TcPlayer('player', {
+    "m3u8": strlink,
+    "autoplay" : false,      //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
+    "poster" : "http://www.test.com/myimage.jpg",
+    "width" :  '480',//视频的显示宽度，请尽量使用视频分辨率宽度
+    "height" : '320'//视频的显示高度，请尽量使用视频分辨率高度
+    });
+}
+    </script>
+
+
+
+
+
+</div>
+
+{%endblock%}

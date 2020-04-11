@@ -1,0 +1,380 @@
+<!--{% extands 'moviebase.html' %}-->
+
+
+<!--{% block body%}-->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.4.1/css/bootstrap-grid.css" rel="stylesheet">
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+
+
+
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> 
+					 <a class="navbar-brand" href="#">
+						<img src="http://temp.im/200x200" width="30" height="30" class="d-inline-block align-top" alt="">
+						柚子娱乐
+					  </a>
+				</div>
+				
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<li class="active">
+							 <a href="#">电影</a>
+						</li>
+						<li>
+							 <a href="#">美剧</a>
+						</li>
+						<li class="dropdown">
+							 <a href="#" class="dropdown-toggle" data-toggle="dropdown">卫视<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									 <a href="#">Action</a>
+								</li>
+								<li>
+									 <a href="#">Another action</a>
+								</li>
+								<li>
+									 <a href="#">Something else here</a>
+								</li>
+								<li class="divider">
+								</li>
+								<li>
+									 <a href="#">Separated link</a>
+								</li>
+								<li class="divider">
+								</li>
+								<li>
+									 <a href="#">One more separated link</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="#">音乐</a>
+					   </li>
+					   <li>
+						<a href="#">游戏</a>
+						   </li>
+						   <li>
+							<a href="#">直播</a>
+					   </li>
+					</ul>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input type="text" class="form-control" />
+						</div> <button type="submit" class="btn btn-default">搜索</button>
+					</form>
+					
+					<ul class="nav navbar-nav navbar-right invisible ">
+						<li>
+							 <a href="#">Link</a>
+						</li>
+						<li class="dropdown">
+							 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									 <a href="#">Action</a>
+								</li>
+								<li>
+									 <a href="#">Another action</a>
+								</li>
+								<li>
+									 <a href="#">Something else here</a>
+								</li>
+								<li class="divider">
+								</li>
+								<li>
+									 <a href="#">Separated link</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+			</nav>
+
+		</div>
+		<div class="col-md-12 column">
+			<div id="myCarousel" class="carousel slide">
+				<!-- 轮播（Carousel）指标 -->
+				<ol class="carousel-indicators">
+					<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+					<li data-target="#myCarousel" data-slide-to="1"></li>
+					<li data-target="#myCarousel" data-slide-to="2"></li>
+				</ol>   
+				<!-- 轮播（Carousel）项目 -->
+				<div class="carousel-inner">
+					<div class="item active">
+						<img src="http://temp.im/1200x300" class="img-fluid" alt="Responsive image First slide">
+						<div class="carousel-caption">标题 1</div>
+					</div>
+					<div class="item">
+						<img src="http://temp.im/1200x300" alt="Second slide">
+						<div class="carousel-caption">标题 2</div>
+					</div>
+					<div class="item">
+						<img src="http://temp.im/1200x300" alt="Third slide">
+						<div class="carousel-caption">标题 3</div>
+					</div>
+				</div>
+				<!-- 轮播（Carousel）导航 -->
+				<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+			
+		</div>
+
+		<div class="col-md-12 column">
+			<ul class="breadcrumb invisible">
+				<li><a href="#">Home</a></li>
+			</ul>
+		</div>
+
+	</div>
+
+	
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="row clearfix">
+				<div class="col-md-2 column">
+				</div>
+				<div class="col-md-8 column">
+
+
+
+					<div class="row">
+						<div class="col-md-4">
+							<a href="#" class="thumbnail">
+								<img src="http://temp.im/200x300"
+									 alt="通用的占位符缩略图">
+							</a>
+						</div>
+						<div class="col-md-8 small">
+							<ul class="list-group">
+								<li class="list-group-item ">影片：</li>
+								<li class="list-group-item">日期：</li>
+								<li class="list-group-item">地区：</li>
+								<li class="list-group-item">类型：</li>
+								<li class="list-group-item active text-center">详情页</li>
+							</ul>
+
+						</div>
+						
+
+					</div>
+					<div>
+						<ul class="nav nav-list"><li class="divider"></li></ul>
+						<hr />
+					</div>
+
+					<div class="row">
+						<div class="col-md-4">
+							<a href="#" class="thumbnail">
+								<img src="http://temp.im/200x300"
+									 alt="通用的占位符缩略图">
+							</a>
+						</div>
+						<div class="col-md-8 small">
+							<ul class="list-group">
+								<li class="list-group-item ">影片：</li>
+								<li class="list-group-item">日期：</li>
+								<li class="list-group-item">地区：</li>
+								<li class="list-group-item">类型：</li>
+								<li class="list-group-item active text-center">详情页</li>
+							</ul>
+
+						</div>
+						
+
+					</div>
+
+					<div class="row invisible">
+						<div class="col-md-4">
+							<div class="thumbnail">
+								<img alt="300x200" src="http://cdn.ibootstrap.cn/lorempixel.com/600/200/people/default.jpg" />
+								<div class="caption">
+									<h3>
+										Thumbnail label
+									</h3>
+									<p>
+										nibh ultricies vehicula ut id elit.
+									</p>
+									<p>
+										 <a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="thumbnail">
+								<img alt="300x200" src="http://cdn.ibootstrap.cn/lorempixel.com/600/200/city/default.jpg" />
+								<div class="caption">
+									<h3>
+										Thumbnail label
+									</h3>
+									<p>
+										Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+									</p>
+									<p>
+										 <a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="thumbnail">
+								<img alt="300x200" src="http://cdn.ibootstrap.cn/lorempixel.com/600/200/sports/default.jpg" />
+								<div class="caption">
+									<h3>
+										Thumbnail label
+									</h3>
+									<p>
+										Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+									</p>
+									<p>
+										 <a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+
+
+					
+					<div class="row clearfix text-center">
+						<div class="col-md-12 column">
+							<ul class="pagination">
+								<li>
+									 <a href="#">Prev</a>
+								</li>
+								<li>
+									 <a href="#">1</a>
+								</li>
+								<li>
+									 <a href="#">2</a>
+								</li>
+								<li>
+									 <a href="#">3</a>
+								</li>
+								<li>
+									 <a href="#">4</a>
+								</li>
+								<li>
+									 <a href="#">5</a>
+								</li>
+								<li>
+									 <a href="#">Next</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2 column">
+					<ul class="nav nav-pills">
+						<li class="active">
+							 <a href="#"> <span class="badge pull-right">42</span> 今日新增</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			
+		</div>
+	</div>
+    <footer class="footer ">
+		<div class="container">
+		  <div class="row footer-top small">
+			<div class="col-md-6 col-lg-6">
+			  <h4>
+				<img src="https://temp.im/600x20">
+			  </h4>
+			  <p>为大家提供好看的、好听的、好玩的优质内容</p>
+			</div>
+			<div class="col-md-6  col-lg-6">
+			  <div class="row about">
+				<div class="col-sm-3">
+				  <h4>关于</h4>
+				  <ul class="list-unstyled">
+					<li><a href="/about/">关于我们</a></li>
+					<li><a href="/ad/">广告合作</a></li>
+					<li><a href="/links/">友情链接</a></li>
+
+				  </ul>
+				</div>
+				<div class="col-sm-3">
+				  <h4>联系方式</h4>
+				  <ul class="list-unstyled">
+					<li><a href="https://weibo.com/bootcss" title="Bootstrap中文网官方微博" target="_blank">新浪微博</a></li>
+					<li><a href="mailto:admin@bootcss.com">电子邮件</a></li>
+				  </ul>
+				</div>
+				<div class="col-sm-3">
+				  <h4>旗下网站</h4>
+				  <ul class="list-unstyled">
+					<li><a href="https://www.bootcdn.cn/" target="_blank">BootCDN</a></li>
+					<li><a href="https://pkg.phpcomposer.com/" target="_blank">Packagist中国镜像</a></li>
+				  </ul>
+				</div>
+				<div class="col-sm-3">
+				  <h4>特别致谢</h4>
+				  <ul class="list-unstyled">
+					<li><a href="https://www.maoyuncloud.com/" target="_blank">猫云</a></li>
+					<li><a href="https://www.jdcloud.com/" target="_blank">京东云</a></li>
+					<li><a href="https://www.upyun.com" target="_blank">又拍云</a></li>
+				  </ul>
+				</div>
+			  </div>
+	  
+			</div>
+		  </div>
+		  <hr/>
+		  <div class="row footer-bottom small text-center">
+			<ul class="list-inline text-center">
+			  <li><a href="http://www.beian.miit.gov.cn/" target="_blank">京ICP备11008151号-6</a></li><li>京公网安备11010802014853</li>
+			</ul>
+		  </div>
+		</div>
+	  </footer>
+	  
+</div>
+
+
+
+
+
+
+
+{%endblock%}

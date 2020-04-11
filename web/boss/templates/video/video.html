@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <title>播放器例子</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-tap-highlight" content="no">
+    <!--<meta http-equiv="content-security-policy" content="block-all-mixed-content">-->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .vcp-error-tips {
+            color: #fff;
+
+        }
+        a{
+            color: #fff;
+        }
+        .vcp-player .marker{
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 255, 255, .5);
+            top: 0;
+            right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="video-container" style="margin: 0px auto;">
+</div>
+<!--Polyfill-->
+<!--[if lt IE 9]>
+<script src="https://imgcache.qq.com/open/qcloud/video/vcplayer/libs/es5-shim.js"></script>
+<script src="https://imgcache.qq.com/open/qcloud/video/vcplayer/libs/es5-sham.js"></script>
+<![endif]-->
+<script src="https://imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer-2.3.2.js"></script>
+<script>
+    (function () {
+        function getParams(name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return decodeURIComponent(r[2]);
+            }
+            return null;
+        }
+
+        function getPathParams() {
+            var path = location.pathname.split('/');
+            if (path[1] == 'vod-player') {
+                return {
+                    'path': location.origin + path.slice(0, 4).join('/'),
+                    'appid': path[2],
+                    'fileid': path[3]
+                }
+            } else {
+                return null;
+            }
+        }
+
+        var rtmp = getParams('rtmp'),
+            flv = getParams('flv'),
+            m3u8 = getParams('m3u8'),
+            mp4 = getParams('mp4'),
+            live = (getParams('live') == 'true' ? true : false),
+            coverpic = getParams('coverpic'),
+            width = getParams('width'),
+            height = getParams('height'),
+            volume = getParams('volume'),
+            flash = (getParams('flash') == 'true' ? true : false),
+            x5_player = (getParams('x5_player') == 'false' ? false : true),
+            h5_flv = (getParams('h5_flv') == 'true' ? true : false),
+            autoplay = (getParams('autoplay') == 'true' ? true : false),
+            flashUrl = (function () {
+                var params = getPathParams();
+                if (params) {
+                    return params.path + '/player/release/QCPlayer.swf';
+                }
+                return '//imgcache.qq.com/open/qcloud/video/player/release/QCPlayer.swf'
+            })(),
+            log = getParams('log');
+        /**
+         * 视频类型播放优先级
+         * mobile ：m3u8>mp4
+         * PC ：RTMP>flv>m3u8>mp4
+         */
+
+        var options = {
+            m3u8: 'https://zuikzy.603ee.com/2019/06/06/0eVlMzdJ4xa9mz5F/playlist.m3u8',
+            autoplay: autoplay,
+            live: live,
+            width: width || '480',
+            height: height || '320',
+            volume: volume || 0.5,
+            flash: flash,
+            flashUrl: flashUrl,
+            x5_player: x5_player,
+            h5_flv: h5_flv,
+            wording: {
+                2032: '请求视频失败，请检查网络',
+                2048: '请求m3u8文件失败，可能是网络错误或者跨域问题'
+            },
+            listener: function (msg) {
+                if(msg.type == 'load') {
+                    var _div = document.createElement('div');
+                    _div.className = 'marker';
+                    _div.innerText = '测试';
+                    document.querySelector('.vcp-player').appendChild(_div)
+                }
+            }
+        };
+        window.tcplayer = new TcPlayer('video-container', options);
+
+    })();
+</script>
+</body>
+</html>
