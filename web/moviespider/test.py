@@ -84,7 +84,36 @@ def insertdb(c,jsondata):#将json文件插入数据库
     tempsql='INSERT INTO video (%s) VALUES (%s)'%(columnname,values)
     c.execute(tempsql,para)
 
+def mode_1():
+    moviedict={}#一条数据信息
+    moviedict["platform"]=keyset
+    for info,rule in configdict[keyset]['target_xpath'].items():#获取当前电影的详细信息
+        if info =="img":
+            if(ph.html.xpath(rule)):
+                moviedict[info]=ph.html.xpath(rule)[0]
+            else:
+                moviedict[info]=''
+        elif info =="m3u8" or info=="yun1" or info == "download":
+            moviedict[info]={}
+            for subset in ph.html.xpath(rule):
+                sep=subset.text.find('$')
+                if sep:
+                    subsetlabel=subset.text[:sep]
+                    subseturl=subset.text[sep+1:]
+                    moviedict[info][subsetlabel]=subseturl
+                else:
+                    moviedict[info][subsetlabel]=subset
+        elif info=="name":
+            tempname=ph.html.xpath(rule)[0].text
+            tempname=tempname.split(' ')
+            moviedict[info]=tempname[0]
 
+        else:
+            if(ph.html.xpath(rule)):
+                moviedict[info]=ph.html.xpath(rule)[0].text
+            else:
+                moviedict[info]=''
+    return moviedict
 
 ignortime=0
 
