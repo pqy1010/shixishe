@@ -50,8 +50,9 @@
 						{% for post in posts['seachres'] %}
 						<div class="col-sm-6 col-md-4">
 							<div class="thumbnail">
-								<img src="{{ post['img'] }}"
-									 alt="{{ post['name'] }}" width="100%" height="100px">
+								<a href="{{ url_for('movie.detail',id=post['id'])}}"><img src="{{ post['img'] }}"
+									alt="{{ post['name'] }}" width="100%" height="100px" ></a>
+								
 								
 									 <div class="col-md-8 small">
 										<ul class="list-group">
@@ -71,25 +72,13 @@
 						{% endfor %}
 					</div>
 
-
 					<script>
 						$(document).ready(function(){
-						  $("a[name='pagenumlink']").click(function(){
-							alert($(this).text());
-						  });
-					 
-						  $("a[name='fristpage']").click(function(){
-							 
-							alert(posts.totalpage);
-						  });
-					 
-					 
-						  $("a[name='lastpage']").click(function(){
-							alert($(this).text());
-						  });
-					 
+							$("li[id='{{posts['pagenum']}}']").addClass("active");
 						});
-						</script>
+					</script>
+
+
 
 					<!--分页-->
 					<div class="row clearfix text-center">
@@ -100,23 +89,31 @@
 								</li>
 								{% if posts['pagenum']-2 <=0  %}
 
-									{% for pagenum in range(1,[posts['totalpage'],posts['pagenum']+5]|min+1) %}
+									{% for pagenum in range(1,[session['totalpage'],posts['pagenum']+4]|min+1) %}
 									
-										<li>
-											<a href="{{url_for('movie.movielist',page=pagenum,cmd=posts['cmd'])}}" name="pagenumlink">{{ pagenum }}</a>
+										<li id="{{ pagenum }}">
+											<a href="{{url_for('movie.movielist',page=pagenum,cmd=posts['cmd'])}}" name="pagenumlink" >{{ pagenum }}</a>
 										</li>
 									{% endfor %}
 
-								{% else %}
-									{% for pagenum in range(posts['pagenum']-2,posts['pagenum']+3) %}
+								{% elif posts['pagenum']+2 <=session['totalpage'] %}
+									{% for pagenum in range(posts['pagenum']-2,posts['pagenum']+3,) %}
 									
-									<li>
+									<li id="{{ pagenum }}">
 										<a href="{{url_for('movie.movielist',page=pagenum,cmd=posts['cmd'])}}" name="pagenumlink">{{ pagenum }}</a>
 									</li>
 									{% endfor %}
+								{% else %}
+									{% for pagenum in range(posts['pagenum']-4,[posts['pagenum']+3,session['totalpage']]|min+1) %}
+										
+									<li id="{{ pagenum }}">
+										<a href="{{url_for('movie.movielist',page=pagenum,cmd=posts['cmd'])}}" name="pagenumlink">{{ pagenum }}</a>
+									</li>
+									{% endfor %}
+
 								{% endif %}
 								<li>
-									 <a href="{{url_for('movie.movielist',page=posts['totalpage'],cmd=posts['cmd'])}}" name="lastpage"> >> </a>
+									 <a href="{{url_for('movie.movielist',page=session['totalpage'],cmd=posts['cmd'])}}" name="lastpage"> >> </a>
 								</li>
 							</ul>
 						</div>

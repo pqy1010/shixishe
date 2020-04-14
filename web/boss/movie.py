@@ -8,6 +8,7 @@ bp = Blueprint('movie', __name__, url_prefix='/movie')
 #movieclass=['全部','剧情','喜剧','动作','爱情','科幻','动画','悬疑','惊悚','恐怖','犯罪','音乐','歌舞','传记','历史','战争','西部','奇幻','冒险','灾难','武侠']
 movieclass={'1':'全部','2':'剧情','3':'喜剧','4':'动作','5':'爱情','6':'科幻','7':'动画','8':'悬疑','9':'惊悚','10':'恐怖','11':'犯罪','12':'音乐','13':'歌舞','14':'传记','15':'历史',
 '16':'战争','17':'西部','18':'奇幻','19':'冒险','20':'灾难','21':'武侠'}
+
 @bp.route('/insertfromspider',methods=('GET','POST'))
 def insertfromspider():#将爬虫传送过来的数据存入数据库
     db = get_db()
@@ -42,43 +43,42 @@ def insertfromspider():#将爬虫传送过来的数据存入数据库
 @bp.route('/movielist/',methods=('GET','POST'))
 @bp.route('/movielist/<int:cmd>/<int:page>',methods=('GET','POST'))
 def movielist(cmd=1,page=1):#电影列表主页
+    
 
     db=get_db()
     posts={}
-    pagecount_def=12
+    pagecount=12
+    session['totalpage']=None
     if request.method=='POST' or request.method=='GET':
-        jsonstr=request.get_data(as_text=True)
-        print(jsonstr)
         query=''
-        if len(jsonstr)==0:
-            print('no jsondata')
-            jsondata={'pagenum':page,'pagecount':pagecount_def}
+
+        jsondata={'pagenum':page,'cmd':cmd,'pagecount':pagecount}
+        if cmd==1:
+            query=''
         else:
-            jsondata= json.loads(jsonstr)       
-            for key,vals in jsondata.items():
-                if vals !='' and key !='pagenum' and key != 'pagecount':
-                    if len(query)==0:
-                        query='%s=%s'%(key,vals)
-                    else:
-                        query+='and %s=%s'%(key,vals)
-            
-            offset=(jsondata['pagenum']-1)*jsondata['pagecount']
+            query='%s like %s'%('genre',movieclasss[str(cmd)])
+
+        
+        offset=(jsondata['pagenum']-1)*jsondata['pagecount']
 
         if len(query)==0:
-            searchsql='SELECT id,name, updatet, img, introduction,genre,screen,region from video ORDER BY id DESC limit %d offset %d'%(
-                jsondata['pagecount'],jsondata['pagenum'])
+            searchsql='SELECT id,name, updatet, img, introduction,genre,screen,region from video ORDER BY id limit %d offset %d'%(
+                jsondata['pagecount'],offset)
+            
         else:
-            searchsql='SELECT id,name, updatet, img, introduction,genre,screen,region from video WHERE %s ORDER BY id DESC limit %d offset %d'%(
-                query,jsondata['pagecount'],jsondata['pagenum'])
+            searchsql='SELECT id,name, updatet, img, introduction,genre,screen,region from video WHERE %s ORDER BY id limit %d offset %d'%(
+                query,jsondata['pagecount'],offset)
     searchres=db.execute(searchsql).fetchall()
-    print(len(searchres))
-    if jsondata['pagenum']==1:
-        totallist=searchres[0]['id']
-        totalpagenum=round(totallist/jsondata['pagecount']+0.5)
-        posts['totalpage']=totalpagenum
-    else:
-        posts['totalpage']=jsondata['totalpage']
-    
+    if session['totalpage']==None:
+        if len(query)==0:
+            totalpage_searchsql='SELECT id from video'
+            
+        else:
+            totalpage_searchsql='SELECT id from video WHERE %s'%(query)
+        
+        totalpagenum=round(len(db.execute(totalpage_searchsql).fetchall())/jsondata['pagecount']+0.5)
+        session['totalpage']=totalpagenum
+    print(totalpagenum)
     posts['pagenum']=jsondata['pagenum']
     
     posts['seachres']=searchres
