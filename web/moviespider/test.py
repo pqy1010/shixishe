@@ -12,7 +12,6 @@ logging.basicConfig(filename='./my.log', level=logging.DEBUG, format=LOG_FORMAT)
 session=HTMLSession()
 
 
-
 #获取配置
 with open('caiji.config','r') as f:
     configjson=f.read()
@@ -115,9 +114,36 @@ def mode_1():
                 moviedict[info]=''
     return moviedict
 
+
+def mode_0():
+    a=["名称","封面","集数","别名","导演","主演","类型","地区","语言","上映","片长","更新","总播放量","今日播放量","总评分","评分次数","简介","yun1","m3u8","下载","来源"]
+    e=["name","img","jishu","othername","director","actor","genre","region","language","screen","mlen","updatet","clicknum","todayclicknum","score","scorenum","introduction","yun1","m3u8","download","platform"]
+    movieinfo=dict(a,e)
+    moviedict={}#一条数据信息
+    moviedict["platform"]=keyset
+    for info,rule in configdict[keyset]['target_xpath'].items():#获取当前电影的详细信息
+        if info == 'info':#开启模糊查找
+            if(ph.html.xpath(rule)):
+                xpathres=ph.html.xpath(rule)
+                reslist=[]
+                for i in range(len(xpathres)):
+                    templist=xpathres[i].text.split('\n')
+                    reslist.extend(templist)
+                reslist=list(set(reslist))
+                for line in reslist:
+                    for key,val in movieinfo.items():
+                        if key in line:
+                            moviedict[val]=reslist
+                            del movieinfo[key]
+        
+
+
+
+
+
+
+
 ignortime=0
-
-
 updatelist=[]
 savepath='./data/'
 for keyset,valset in configdict.items():
@@ -154,34 +180,10 @@ for keyset,valset in configdict.items():
             except:
                 logging.warning(keyset+suburl+'not response')
                 continue
-            moviedict={}#一条数据信息
-            moviedict["platform"]=keyset
-            for info,rule in configdict[keyset]['target_xpath'].items():#获取当前电影的详细信息
-                if info =="img":
-                    if(ph.html.xpath(rule)):
-                        moviedict[info]=ph.html.xpath(rule)[0]
-                    else:
-                        moviedict[info]=''
-                elif info =="m3u8" or info=="yun1" or info == "download":
-                    moviedict[info]={}
-                    for subset in ph.html.xpath(rule):
-                        sep=subset.text.find('$')
-                        if sep:
-                            subsetlabel=subset.text[:sep]
-                            subseturl=subset.text[sep+1:]
-                            moviedict[info][subsetlabel]=subseturl
-                        else:
-                            moviedict[info][subsetlabel]=subset
-                elif info=="name":
-                    tempname=ph.html.xpath(rule)[0].text
-                    tempname=tempname.split(' ')
-                    moviedict[info]=tempname[0]
+            
+            caijimode=globals().get('mode_%d' % configdict[keyset]['mode'])
+            moviedict=caijimode()
 
-                else:
-                    if(ph.html.xpath(rule)):
-                        moviedict[info]=ph.html.xpath(rule)[0].text
-                    else:
-                        moviedict[info]=''
             updatelist.append(moviedict)
             sqlres=c.execute("SELECT id,platform,screen FROM video WHERE name=?",[moviedict['name']]).fetchall()
             if(not sqlres):

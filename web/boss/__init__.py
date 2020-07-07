@@ -42,4 +42,7 @@ def create_app(test_config=None):# 创建一个flask实例
     from . import movie
     app.register_blueprint(movie.bp)
 
+    from . import audio
+    app.register_blueprint(audio.bp)
+
     return app

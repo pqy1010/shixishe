@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - geometry - normals</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+
+		<div id="container">
+                <h1>createMediaElementSource example</h1>
+    <audio controls>
+      <source src="{{ url_for('static',filename='viper.ogg')}}" type="audio/ogg">
+      <source src="{{ url_for('static',filename='viper.mp3')}}" type="audio/mp3">
+      <p>Browser too old to support HTML5 audio? How depressing!</p>
+    </audio>
+        </div>
+
+
+		<script type="module">
+
+            //import * as THREE from '../build/three.module.js';
+            import * as THREE from '{{ url_for("static",filename="build/three.module.js")}}';
+
+
+            //import Stats from './jsm/libs/stats.module.js';
+            import Stats from '{{ url_for("static",filename="jsm/libs/stats.module.js")}}';
+            //import { GUI } from './jsm/libs/dat.gui.module.js';
+            import { GUI } from '{{ url_for("static",filename="jsm/libs/dat.gui.module.js")}}';
+
+            //import { OrbitControls } from './jsm/controls/OrbitControls.js';
+            import { OrbitControls } from '{{ url_for("static",filename="jsm/controls/OrbitControls.js")}}';
+            //import { VertexNormalsHelper } from './jsm/helpers/VertexNormalsHelper.js';
+            import { VertexNormalsHelper } from '{{ url_for("static",filename="jsm/helpers/VertexNormalsHelper.js")}}';
+
+			var container, stats, gui;
+			var camera, scene, renderer;
+            var mesh, geometry;
+            var polarAngle;
+            var azimuthalAngle;
+            var distance;
+            var controls;
+            var hfliter;
+
+
+			var geometries = [
+				new THREE.BoxBufferGeometry( 200, 200, 200, 2, 2, 2 ),
+				new THREE.CircleBufferGeometry( 200, 32 ),
+				new THREE.CylinderBufferGeometry( 75, 75, 200, 8, 8 ),
+				new THREE.IcosahedronBufferGeometry( 100, 1 ),
+				new THREE.OctahedronBufferGeometry( 200, 0 ),
+				new THREE.PlaneBufferGeometry( 200, 200, 4, 4 ),
+				new THREE.RingBufferGeometry( 32, 64, 16 ),
+				new THREE.SphereBufferGeometry( 100, 12, 12 ),
+				new THREE.TorusBufferGeometry( 64, 16, 12, 12 ),
+				new THREE.TorusKnotBufferGeometry( 64, 16 )
+			];
+
+			var options = {
+				Geometry: 0
+			};
+
+			var material = new THREE.MeshBasicMaterial( { color: 0xfefefe, wireframe: true, opacity: 0.5 } );
+
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            let audioCtx;
+            const myAudio = document.querySelector('audio');
+            const pre = document.querySelector('pre');
+            const myScript = document.querySelector('script');
+            audioCtx = new AudioContext();
+            // Create a MediaElementAudioSourceNode
+            // Feed the HTMLMediaElement into it
+            let source = audioCtx.createMediaElementSource(myAudio);
+            var myArrayBuffer = audioCtx.createBuffer(1, 200, 48000);
+            // Create a gain node
+            let gainNode = audioCtx.createGain();
+            let gainNodeL=audioCtx.createGain();
+            // Create variables to store mouse pointer Y coordinate
+            // and HEIGHT of screen
+            let CurY;
+            let HEIGHT = window.innerHeight;
+
+            // Get new mouse pointer coordinates when mouse is moved
+            // then set new gain value
+            var splitter = audioCtx.createChannelSplitter(2);
+            var merger = audioCtx.createChannelMerger(2);
+            let convolver_L = audioCtx.createConvolver();
+            let convolver_R = audioCtx.createConvolver();
+            var panner = audioCtx.createPanner();
+            panner.panningModel = 'HRTF';
+            panner.distanceModel = 'inverse';
+            panner.refDistance = 1;
+            panner.maxDistance = 10000;
+            panner.rolloffFactor = 1;
+            panner.coneInnerAngle = 360;
+            panner.coneOuterAngle = 0;
+            panner.coneOuterGain = 0;
+
+            //document.onmousemove = updatePage;
+            source.connect(splitter);
+            splitter.connect(convolver_R,0);
+            splitter.connect(convolver_L,1);
+            convolver_L.connect(merger,0,1);
+            convolver_R.connect(merger,0,0);
+            merger.connect(audioCtx.destination);
+
+
+
+            var hf;
+			init();
+			animate();
+
+			function addMesh() {
+
+				if ( mesh !== undefined ) {
+
+					scene.remove( mesh );
+					geometry.dispose();
+
+				}
+
+				geometry = geometries[ options.Geometry ];
+
+				// scale geometry to a uniform size
+
+				geometry.computeBoundingSphere();
+
+				var scaleFactor = 160 / geometry.boundingSphere.radius;
+				geometry.scale( scaleFactor, scaleFactor, scaleFactor );
+
+				mesh = new THREE.Mesh( geometry, material );
+				scene.add( mesh );
+
+				var vertexNormalsHelper = new VertexNormalsHelper( mesh, 10 );
+				mesh.add( vertexNormalsHelper );
+
+			}
+
+			function init() {
+                console.log('in init');
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera.position.z = 500;
+
+				scene = new THREE.Scene();
+
+				addMesh();
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+				//
+
+				var geometries = {
+					BoxBufferGeometry: 0,
+					CircleBufferGeometry: 1,
+					CylinderBufferGeometry: 2,
+					IcosahedronBufferGeometry: 3,
+					OctahedronBufferGeometry: 4,
+					PlaneBufferGeometry: 5,
+					RingBufferGeometry: 6,
+					SphereBufferGeometry: 7,
+					TorusBufferGeometry: 8,
+					TorusKnotBufferGeometry: 9
+				};
+
+				gui = new GUI( { width: 350 } );
+				gui.add( options, 'Geometry', geometries ).onChange( function () {
+
+					addMesh();
+
+				} );
+
+				//
+
+				controls = new OrbitControls( camera, renderer.domElement );
+                controls.enableZoom = false;
+
+                window.addEventListener( 'resize', onWindowResize, false );
+                hfliter={{ posts|tojson }};;
+                console.log(hfliter);
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+            function pvaldeg(angle){
+                var dtr=Math.PI/180;
+                angle=Math.atan2(Math.sin(angle),Math.cos(angle))/dtr;
+                if(angle<-90){
+                    angle=angle+360;
+                }
+                return angle;
+            }
+
+
+
+
+
+            function getimpluse(az,el,hfliter){
+                var azimuth=pvaldeg(az);
+                if(azimuth<-90 || azimuth>90){
+                    return null;
+                }
+                var elevation=pvaldeg(el);
+                var elmax=50;
+                var elindices=Array.from(new Array(elmax), (item, index) => index);
+                var elevations=new Array(elmax).fill(0);
+                for(var i =0;i<elmax;i++){
+                    elevations[i]=-45+5.625*elindices[i];
+                }
+                var el=Math.round((elevation+45)/5.625);
+                el=Math.max(el,0);
+                el=Math.min(el,elmax);
+                var elerr=pvaldeg(elevation-elevations[el])
+                var azimuths=[-80,-65,-55,-45,-40,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,55,65,80];
+                var azindexarr=Array(azimuths.length).fill(0);
+                for (var i=0;i<azimuths.length;i++){
+                    azindexarr[i]=Math.abs(pvaldeg(Math.abs(azimuths[i]-azimuth)));
+                }
+
+                function indexOfSmallest(a) {
+                        return a.indexOf(Math.min.apply(Math, a));
+                        }
+                var az=indexOfSmallest(azindexarr);
+                console.log("%d--%d",el,az);
+                return [hfliter.hl[az][el],hfliter.hr[az][el]]
+
+            }
+
+
+
+
+
+            // connect the AudioBufferSourceNode to the gainNode
+            // and the gainNode to the destination, so we can play the
+            // music and adjust the volume using the mouse cursor
+           function get_con_buffer(data){
+            var nowBuffering = myArrayBuffer.getChannelData(0);
+                for (var i = 0; i < data.length; i++) {
+                // Math.random() is in [0; 1.0]
+                // audio needs to be in [-1.0; 1.0]
+                nowBuffering[i] = data[i];
+                }
+                return myArrayBuffer
+           }
+
+
+
+
+            function render() {
+                polarAngle = controls.getPolarAngle();
+                azimuthalAngle = controls.getAzimuthalAngle();
+                distance = controls.object.position.distanceTo( controls.target );
+                console.log('%f--%f--%f',polarAngle,azimuthalAngle,distance);
+                hf=getimpluse(azimuthalAngle,polarAngle,hfliter);
+                //gainNode.gain.value = azimuthalAngle/3.14;
+                //myAudio.volume = azimuthalAngle/3.14;
+                //console.log(hf[0]);
+                convolver_R.buffer=get_con_buffer(hf[0]);
+                convolver_L.buffer=get_con_buffer(hf[1]);
+				renderer.render( scene, camera );
+
+			}
+
+			function animate() {
+
+                requestAnimationFrame( animate );
+
+                render();
+                stats.update();
+
+                }
+
+		</script>
+
+	</body>
+</html>
